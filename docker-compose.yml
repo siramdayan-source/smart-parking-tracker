@@ -1,19 +1,21 @@
-﻿services:
-  storage:
-    build: ./storage
-    container_name: parking_storage
-    ports:
-      - "8081:80"
-    volumes:
-      - parking_images_volume:/usr/local/apache2/htdocs/images
+﻿services: # פותח את רשימת השירותים (הקונטיינרים) שהמערכת תקים ותריץ
+  storage: # מגדיר שירות בשם storage — שרת האחסון לתמונות של הרכבים
+    build: ./storage # בונה את האימג' של השירות מתוך ה-Dockerfile שנמצא בתיקיית storage
+    container_name: parking_storage # נותן לקונטיינר שם קבוע: parking_storage
+    ports: # מגדיר מיפוי פורטים בין המחשב לקונטיינר
+      - "8081:80" # מחבר את פורט 8081 במחשב לפורט 80 בתוך שרת Apache
+    volumes: # מחבר אחסון קבוע (Volume) לקונטיינר
+      - parking_images_volume:/usr/local/apache2/htdocs/images # מחבר את ה-Volume לתיקיית התמונות בשרת Apache
 
-  web:
-    build: ./web
-    container_name: parking_web
-    ports:
-      - "8080:80"
-    depends_on:
-      - storage
+  web: # מגדיר שירות בשם web — שרת ה-Nginx ולוח הבקרה של השומר
+    build: ./web # בונה את האימג' של השירות מתוך ה-Dockerfile שנמצא בתיקיית web
+    container_name: parking_web # נותן לקונטיינר שם קבוע: parking_web
+    ports: # מגדיר מיפוי פורטים עבור שירות ה-web
+      - "8080:80" # מחבר את פורט 8080 במחשב לפורט 80 בתוך שרת Nginx
+    volumes: # מחבר אחסון קבוע (Volume) גם לשירות ה-web
+      - parking_images_volume:/usr/share/nginx/html/images # מחבר את אותו Volume לתיקיית התמונות של Nginx
+    depends_on: # קובע תלות — web יעלה רק אחרי ש-storage יתחיל לעלות
+      - storage # מציין שהשירות התלוי בו הוא storage
 
-volumes:
-  parking_images_volume:
+volumes: # פותח את אזור הגדרת ה-Volumes הקבועים של הפרויקט
+  parking_images_volume: # מגדיר Named Volume קבוע בשם parking_images_volume לשמירת התמונות
