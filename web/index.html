@@ -1,113 +1,581 @@
-<!DOCTYPE html> <!-- מגדיר לדפדפן שזה מסמך HTML5 -->
-<html lang="he" dir="rtl"> <!-- פותח את העמוד, מגדיר עברית וכיוון כתיבה מימין לשמאל -->
-<head> <!-- פותח את אזור ה-head של העמוד -->
+<!DOCTYPE html> <!-- מגדיר לדפדפן שזה מסמך HTML5 תקני -->
+<html lang="he" dir="rtl"> <!-- פותח את המסמך ומגדיר עברית וכיוון כתיבה מימין לשמאל -->
+<head> <!-- פותח את אזור ההגדרות והעיצוב של העמוד -->
   <meta charset="UTF-8"> <!-- מגדיר קידוד תווים UTF-8 לתמיכה מלאה בעברית -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- מתאים את העמוד לרוחב המסך -->
-  <title>לוח בקרה לשומר - חניה חכמה</title> <!-- כותרת העמוד בלשונית הדפדפן -->
-  <style> <!-- פותח בלוק עיצוב CSS -->
-    body { <!-- עיצוב גוף העמוד -->
-      font-family: Arial, sans-serif; /* גופן קריא ופשוט */
-      background-color: #f1f5f9; /* רקע אפור בהיר */
-      margin: 0; /* מאפס שוליים חיצוניים */
-      padding: 24px; /* מוסיף ריווח פנימי סביב התוכן */
-      color: #0f172a; /* צבע טקסט כהה */
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- מתאים את העמוד לכל גודל מסך (מחשב, טאבלט ונייד) -->
+  <title>לוח בקרה לשומר - מושיק עפיה</title> <!-- מגדיר את הכותרת שמופיעה בלשונית הדפדפן -->
+  <style> /* פותח בלוק עיצוב CSS שבו כל שורה מוסברת בהערה */
+    :root { /* מגדיר משתני עיצוב מרכזיים בסגנון פחם רך (Soft Dark / Slate) */
+      --bg-main: #1b222c; /* צבע רקע ראשי אפור פחם כהה ורגוע */
+      --surface-1: #232c38; /* צבע משטח ראשון לסרגלים וקוביות סטטיסטיקה */
+      --surface-2: #2a3544; /* צבע משטח שני לכרטיסי הרכבים */
+      --surface-hover: #323f50; /* צבע משטח בעת מעבר עכבר על אלמנטים */
+      --border: #3a4759; /* צבע גבול עדין שמפריד בין אלמנטים */
+      --text-primary: #f1f5f9; /* צבע טקסט ראשי בהיר וברור */
+      --text-secondary: #9fb0c7; /* צבע טקסט משני אפור בהיר */
+      --accent: #3b82f6; /* צבע הדגשה ראשי כחול רגוע */
+      --accent-hover: #2563eb; /* צבע כחול מעט כהה יותר בעת ריחוף עכבר */
+      --success: #22c55e; /* צבע ירוק לסטטוס מאושר ומחובר */
+      --success-bg: rgba(34, 197, 94, 0.16); /* רקע ירוק שקוף לתגית סטטוס מאושר */
+      --warning: #f59e0b; /* צבע כתום/ענבר לסטטוס ממתין */
+      --warning-bg: rgba(245, 158, 11, 0.16); /* רקע כתום שקוף לתגית ממתין */
+      --shadow: 0 10px 24px rgba(0, 0, 0, 0.28); /* צל רך ועמוק לכרטיסים וסרגלים */
+    } /* סוגר בלוק משתני :root */
+
+    * { /* בוחר את כל האלמנטים בדף */
+      box-sizing: border-box; /* כולל padding ו-border בתוך הרוחב והגובה הכוללים של האלמנט */
+    } /* סוגר בחירת כל האלמנטים */
+
+    body { /* מגדיר עיצוב לכל גוף הדף */
+      margin: 0; /* מאפס שוליים חיצוניים של הדפדפן */
+      min-height: 100vh; /* מבטיח שהרקע יכסה לפחות את כל גובה המסך */
+      padding: 24px; /* מוסיף ריווח פנימי סביב תוכן הדף */
+      font-family: "Segoe UI", Arial, sans-serif; /* קובע פונט מודרני ונקי לעברית */
+      background-color: var(--bg-main); /* מחיל את רקע הפחם הרך */
+      color: var(--text-primary); /* מחיל את צבע הטקסט הראשי */
     } /* סוגר עיצוב body */
-    .header { /* עיצוב סרגל הכותרת העליון */
-      display: flex; /* מסדר אלמנטים בשורה */
-      justify-content: space-between; /* מפריד בין הכותרת לכפתור */
-      align-items: center; /* מיישר אנכית למרכז */
-      margin-bottom: 20px; /* רווח תחתון לפני הכרטיסים */
-      flex-wrap: wrap; /* מאפשר שבירת שורה במסכים צרים */
-      gap: 12px; /* רווח בין פריטים */
-    } /* סוגר עיצוב header */
-    h1 { /* עיצוב כותרת ראשית */
-      margin: 0 0 6px 0; /* רווח קטן מתחת לכותרת */
-      font-size: 24px; /* גודל כתב כותרת */
-    } /* סוגר עיצוב h1 */
-    .subtitle { /* עיצוב תיאור משני */
+
+    .app { /* מיכל ראשי שמכיל וממרכז את כל רכיבי לוח הבקרה */
+      max-width: 1160px; /* מגביל רוחב מקסימלי לקריאות נוחה */
+      margin: 0 auto; /* ממרכז את המיכל אופקית במרכז המסך */
+    } /* סוגר עיצוב .app */
+
+    .topbar { /* סרגל עליון מודרני ללוגו, שם השומר, שעון וכפתור הדמיה */
+      display: flex; /* מסדר את הרכיבים בסרגל בשורה גמישה */
+      justify-content: space-between; /* מפריד בין צד ימין לצד שמאל בסרגל */
+      align-items: center; /* מיישר את הרכיבים אנכית לקו האמצע */
+      flex-wrap: wrap; /* מאפשר ירידת שורה אוטומטית במסכים צרים */
+      gap: 16px; /* מוסיף רווח בין הפריטים בסרגל העליון */
+      background-color: var(--surface-1); /* צבע רקע כהה לסרגל העליון */
+      border: 1px solid var(--border); /* מסגרת דקה ועדינה לסרגל */
+      border-radius: 16px; /* פינות מעוגלות לסרגל העליון */
+      padding: 16px 22px; /* ריווח פנימי בתוך הסרגל */
+      box-shadow: var(--shadow); /* מוסיף צל רך לסרגל */
+      margin-bottom: 18px; /* רווח תחתון לפני שורת הסטטיסטיקות */
+    } /* סוגר עיצוב .topbar */
+
+    .brand { /* עוטף את הלוגו ואת פרטי השומר בצד ימין */
+      display: flex; /* מסדר את הלוגו והטקסט זה לצד זה */
+      align-items: center; /* מיישר אנכית את הלוגו והטקסט */
+      gap: 12px; /* רווח בין סמל הלוגו לטקסט */
+    } /* סוגר עיצוב .brand */
+
+    .logo { /* סמל הלוגו (האות P) של מערכת החניה */
+      width: 42px; /* רוחב סמל הלוגו */
+      height: 42px; /* גובה סמל הלוגו */
+      border-radius: 12px; /* פינות מעוגלות ללוגו */
+      background-color: var(--accent); /* צבע רקע כחול ללוגו */
+      color: #ffffff; /* צבע טקסט לבן בתוך הלוגו */
+      display: flex; /* מאפשר מרכוז מדויק של האות P */
+      align-items: center; /* ממרכז אנכית את האות P */
+      justify-content: center; /* ממרכז אופקית את האות P */
+      font-weight: 800; /* עובי גופן מודגש מאוד ללוגו */
+      font-size: 20px; /* גודל האות בלוגו */
+    } /* סוגר עיצוב .logo */
+
+    .guard-name { /* שורת שם השומר המודגשת */
+      font-size: 18px; /* גודל כתב לשם השומר */
+      font-weight: 700; /* עובי כתב מודגש */
       margin: 0; /* מאפס שוליים */
-      color: #475569; /* צבע אפור כהה */
-    } /* סוגר עיצוב subtitle */
-    button { /* עיצוב כפתור הרענון */
-      background-color: #2563eb; /* צבע כחול לכפתור */
-      color: #ffffff; /* טקסט לבן על הכפתור */
-      border: none; /* ללא מסגרת ברירת מחדל */
-      padding: 10px 16px; /* ריווח פנימי לכפתור */
-      border-radius: 8px; /* פינות מעוגלות */
-      cursor: pointer; /* סמן יד בעת מעבר עכבר */
-      font-size: 14px; /* גודל טקסט בכפתור */
-    } /* סוגר עיצוב button */
-    button:hover { /* עיצוב כפתור במעבר עכבר */
-      background-color: #1d4ed8; /* כחול כהה יותר בעת ריחוף */
-    } /* סוגר עיצוב hover */
-    .grid { /* רשת כרטיסי הרכבים */
-      display: grid; /* פריסת Grid */
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* עמודות גמישות לפי רוחב המסך */
-      gap: 20px; /* רווח בין כרטיסים */
-    } /* סוגר עיצוב grid */
-    .card { /* כרטיס בודד של רכב */
-      background: #ffffff; /* רקע לבן לכרטיס */
-      border-radius: 12px; /* פינות מעוגלות */
-      padding: 14px; /* ריווח פנימי */
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* צל עדין */
-    } /* סוגר עיצוב card */
-    .card img { /* תמונת הרכב בתוך הכרטיס */
-      width: 100%; /* רוחב מלא של הכרטיס */
-      height: 180px; /* גובה אחיד לתמונה */
-      object-fit: cover; /* חיתוך פרופורציונלי ללא עיוות */
-      border-radius: 8px; /* פינות מעוגלות לתמונה */
-      background-color: #e2e8f0; /* רקע זמני בזמן טעינת תמונה */
-    } /* סוגר עיצוב card img */
-    .caption { /* כיתוב מתחת לתמונה */
-      margin-top: 10px; /* רווח מעל הכיתוב */
-      font-weight: bold; /* כתב מודגש */
-    } /* סוגר עיצוב caption */
-    .status { /* שורת סטטוס טעינה/שגיאה */
+    } /* סוגר עיצוב .guard-name */
+
+    .system-sub { /* כיתוב משני קטן מתחת לשם השומר */
       font-size: 13px; /* גודל כתב קטן */
-      color: #64748b; /* צבע אפור */
-      margin-top: 4px; /* רווח מעל הסטטוס */
-    } /* סוגר עיצוב status */
-  </style> <!-- סוגר בלוק CSS -->
-</head> <!-- סוגר head -->
-<body> <!-- פותח גוף העמוד -->
-  <div class="header"> <!-- פותח סרגל עליון -->
-    <div> <!-- עוטף כותרות -->
-      <h1>לוח בקרה לשומר - חניה חכמה</h1> <!-- כותרת ראשית -->
-      <p class="subtitle">צפייה ברכבים מתוך שרת האחסון (Storage)</p> <!-- הסבר קצר -->
-    </div> <!-- סוגר עטיפת כותרות -->
-    <button id="refreshBtn" type="button">רענן תמונות</button> <!-- כפתור לרענון התמונות -->
-  </div> <!-- סוגר סרגל עליון -->
+      color: var(--text-secondary); /* צבע אפור בהיר */
+      margin: 2px 0 0 0; /* רווח קטן מעל הכיתוב המשני */
+    } /* סוגר עיצוב .system-sub */
 
-  <div class="grid" id="carsGrid"> <!-- מיכל כרטיסי הרכבים -->
-    <div class="card"> <!-- כרטיס רכב 1 -->
-      <img src="http://localhost:8081/images/car1.jpg" alt="רכב 1"> <!-- טוען car1.jpg משרת האחסון בפורט 8081 -->
-      <div class="caption">כניסה #1 — car1.jpg</div> <!-- כותרת הכרטיס -->
-      <div class="status">מקור: שרת אחסון</div> <!-- מידע על מקור התמונה -->
-    </div> <!-- סוגר כרטיס 1 -->
+    .topbar-left { /* עוטף את השעון ואת כפתור הוספת הרכב בצד שמאל */
+      display: flex; /* מסדר את השעון והכפתור בשורה */
+      align-items: center; /* מיישר אנכית את השעון והכפתור */
+      gap: 12px; /* רווח בין השעון לכפתור */
+    } /* סוגר עיצוב .topbar-left */
 
-    <div class="card"> <!-- כרטיס רכב 2 -->
-      <img src="http://localhost:8081/images/car2.jpg" alt="רכב 2"> <!-- טוען car2.jpg משרת האחסון בפורט 8081 -->
-      <div class="caption">כניסה #2 — car2.jpg</div> <!-- כותרת הכרטיס -->
-      <div class="status">מקור: שרת אחסון</div> <!-- מידע על מקור התמונה -->
-    </div> <!-- סוגר כרטיס 2 -->
-  </div> <!-- סוגר מיכל הכרטיסים -->
+    .clock-box { /* תיבת תצוגת השעה והתאריך העדכניים */
+      background-color: var(--surface-2); /* רקע כהה מעט יותר לתצוגת השעון */
+      border: 1px solid var(--border); /* מסגרת דקה סביב השעון */
+      padding: 9px 14px; /* ריווח פנימי בתיבת השעון */
+      border-radius: 10px; /* פינות מעוגלות לשעון */
+      font-size: 13px; /* גודל כתב של השעון */
+      color: var(--text-secondary); /* צבע אפור בהיר */
+      font-variant-numeric: tabular-nums; /* שומר על רוחב קבוע לספרות השעון כדי שלא יקפצו */
+    } /* סוגר עיצוב .clock-box */
 
-  <script> <!-- פותח סקריפט JavaScript -->
-    const refreshBtn = document.getElementById('refreshBtn'); // מאתר את כפתור הרענון לפי ID
-    refreshBtn.addEventListener('click', () => { // מאזין ללחיצה על כפתור הרענון
-      const imgs = document.querySelectorAll('#carsGrid img'); // בוחר את כל התמונות שבגריד
-      imgs.forEach((img) => { // עובר על כל תמונה בנפרד
-        const baseUrl = img.src.split('?')[0]; // שומר את כתובת התמונה המקורית ללא פרמטרים קודמים
-        img.src = `${baseUrl}?t=${Date.now()}`; // מוסיף חותמת זמן כדי להכריח טעינה מחודשת מהשרת
-      }); // מסיים לולאת רענון
-    }); // מסיים מאזין לחיצה
+    .btn { /* עיצוב בסיסי משותף לכל הכפתורים בממשק */
+      border: 1px solid transparent; /* מגדיר מסגרת בסיסית לכפתור */
+      border-radius: 10px; /* פינות מעוגלות לכפתור */
+      padding: 10px 16px; /* ריווח פנימי נוח ללחיצה */
+      font-size: 14px; /* גודל כתב בכפתור */
+      font-weight: 600; /* עובי גופן חצי מודגש */
+      cursor: pointer; /* משנה את סמן העכבר ליד לוחצת */
+      transition: background-color 0.2s ease, transform 0.15s ease; /* מעבר חלק בעת לחיצה וריחוף */
+    } /* סוגר עיצוב .btn */
 
-    document.querySelectorAll('#carsGrid img').forEach((img) => { // מוסיף בדיקת שגיאת טעינה לכל תמונה
-      img.addEventListener('error', () => { // מופעל אם התמונה לא נטענה משרת האחסון
-        const statusEl = img.parentElement.querySelector('.status'); // מאתר את שורת הסטטוס בכרטיס
-        if (statusEl) statusEl.textContent = 'שגיאה בטעינת תמונה משרת האחסון'; // מעדכן הודעת שגיאה ברורה
-      }); // מסיים טיפול בשגיאה
-    }); // מסיים לולאת בדיקת שגיאות
-  </script> <!-- סוגר סקריפט -->
-</body> <!-- סוגר body -->
-</html> <!-- סוגר html -->
+    .btn:active { /* מצב לחיצה בפועל על כפתור */
+      transform: scale(0.98); /* מכווץ מעט את הכפתור בעת לחיצה לתחושת לחיצה פיזית */
+    } /* סוגר עיצוב .btn:active */
+
+    .btn-primary { /* עיצוב כפתור ראשי כחול ("+ הדמיית רכב חדש") */
+      background-color: var(--accent); /* צבע כחול ראשי */
+      color: #ffffff; /* טקסט לבן */
+    } /* סוגר עיצוב .btn-primary */
+
+    .btn-primary:hover { /* מצב ריחוף עכבר מעל כפתור ראשי */
+      background-color: var(--accent-hover); /* משנה לכחול כהה יותר */
+    } /* סוגר עיצוב .btn-primary:hover */
+
+    .stats-row { /* שורת שלוש קוביות הסטטיסטיקה של החניון */
+      display: grid; /* מסדר את קוביות הסטטיסטיקה ברשת גמישה */
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* יוצר עמודות שוות שמתאימות לרוחב המסך */
+      gap: 14px; /* רווח בין קוביות הסטטיסטיקה */
+      margin-bottom: 18px; /* רווח תחתון לפני סרגל החיפוש והסינון */
+    } /* סוגר עיצוב .stats-row */
+
+    .stat-card { /* קובייה בודדת לנתון סטטיסטי */
+      background-color: var(--surface-1); /* רקע פחם רך לקובייה */
+      border: 1px solid var(--border); /* מסגרת דקה לקובייה */
+      border-radius: 14px; /* פינות מעוגלות */
+      padding: 14px 18px; /* ריווח פנימי */
+      display: flex; /* מסדר כותרת וערך בשורה */
+      justify-content: space-between; /* מפריד בין שם הנתון לערך שלו */
+      align-items: center; /* מיישר אנכית למרכז */
+    } /* סוגר עיצוב .stat-card */
+
+    .stat-label { /* כיתוב שם הנתון הסטטיסטי */
+      color: var(--text-secondary); /* צבע אפור בהיר */
+      font-size: 14px; /* גודל כתב */
+    } /* סוגר עיצוב .stat-label */
+
+    .stat-value { /* ערך הנתון הסטטיסטי */
+      font-weight: 700; /* טקסט מודגש */
+      font-size: 16px; /* גודל כתב מודגש */
+    } /* סוגר עיצוב .stat-value */
+
+    .status-dot-wrap { /* עוטף נקודת חיווי ירוקה וטקסט סטטוס שרת האחסון */
+      display: inline-flex; /* מסדר נקודה וטקסט בשורה צמודה */
+      align-items: center; /* מיישר אנכית את הנקודה והטקסט */
+      gap: 8px; /* רווח בין הנקודה הירוקה לטקסט */
+      color: var(--success); /* צבע ירוק */
+      font-weight: 700; /* טקסט מודגש */
+    } /* סוגר עיצוב .status-dot-wrap */
+
+    .dot { /* נקודת חיווי עגולה */
+      width: 10px; /* רוחב הנקודה */
+      height: 10px; /* גובה הנקודה */
+      border-radius: 50%; /* הופך את האלמנט לעיגול מושלם */
+      background-color: var(--success); /* צבע ירוק לנקודה */
+    } /* סוגר עיצוב .dot */
+
+    .controls-bar { /* סרגל חיפוש לוחית רישוי וכפתורי סינון */
+      display: flex; /* מסדר חיפוש וכפתורי סינון בשורה גמישה */
+      justify-content: space-between; /* מפריד בין תיבת החיפוש לכפתורי הסינון */
+      align-items: center; /* מיישר אנכית למרכז */
+      flex-wrap: wrap; /* מאפשר שבירת שורה במסכים צרים */
+      gap: 12px; /* רווח בין הפריטים בסרגל */
+      background-color: var(--surface-1); /* רקע פחם רך */
+      border: 1px solid var(--border); /* מסגרת דקה */
+      border-radius: 14px; /* פינות מעוגלות */
+      padding: 14px 18px; /* ריווח פנימי */
+      margin-bottom: 22px; /* רווח תחתון לפני גריד הכרטיסים */
+    } /* סוגר עיצוב .controls-bar */
+
+    .search-input { /* תיבת הטקסט לחיפוש לפי מספר לוחית רישוי */
+      flex: 1; /* מאפשר לתיבת החיפוש לתפוס מקום פנוי בשורה */
+      min-width: 240px; /* רוחב מינימלי כדי שהתיבה תישאר נוחה לקריאה */
+      background-color: var(--surface-2); /* רקע כהה בתוך תיבת החיפוש */
+      border: 1px solid var(--border); /* מסגרת עדינה סביב התיבה */
+      border-radius: 10px; /* פינות מעוגלות */
+      padding: 10px 14px; /* ריווח פנימי */
+      color: var(--text-primary); /* צבע טקסט בהיר בעת הקלדה */
+      font-size: 14px; /* גודל כתב */
+      outline: none; /* מסיר קו מתאר ברירת מחדל של הדפדפן */
+    } /* סוגר עיצוב .search-input */
+
+    .search-input:focus { /* הדגשת מסגרת תיבת החיפוש בזמן הקלדה */
+      border-color: var(--accent); /* משנה את צבע המסגרת לכחול בעת פוקוס */
+    } /* סוגר עיצוב .search-input:focus */
+
+    .filter-group { /* קבוצת כפתורי הסינון ("הכל" / "אושר") */
+      display: flex; /* מסדר את כפתורי הסינון בשורה */
+      gap: 8px; /* רווח בין כפתורי הסינון */
+    } /* סוגר עיצוב .filter-group */
+
+    .filter-btn { /* כפתור סינון בודד */
+      background-color: var(--surface-2); /* רקע כהה לכפתור סינון לא פעיל */
+      color: var(--text-secondary); /* טקסט אפור בהיר */
+      border: 1px solid var(--border); /* מסגרת דקה */
+      border-radius: 10px; /* פינות מעוגלות */
+      padding: 9px 16px; /* ריווח פנימי */
+      font-size: 14px; /* גודל כתב */
+      font-weight: 600; /* עובי גופן */
+      cursor: pointer; /* סמן יד בעת מעבר עכבר */
+    } /* סוגר עיצוב .filter-btn */
+
+    .filter-btn.active { /* עיצוב כפתור הסינון הפעיל כרגע */
+      background-color: var(--accent); /* רקע כחול לכפתור נבחר */
+      color: #ffffff; /* טקסט לבן */
+      border-color: var(--accent); /* מסגרת תואמת */
+    } /* סוגר עיצוב .filter-btn.active */
+
+    .cars-grid { /* גריד דו-טורי לכרטיסי הרכבים */
+      display: grid; /* מפעיל פריסת Grid */
+      grid-template-columns: repeat(2, minmax(0, 1fr)); /* מגדיר שתי עמודות שוות רוחב במסכי מחשב */
+      gap: 20px; /* רווח בין הכרטיסים בגריד */
+    } /* סוגר עיצוב .cars-grid */
+
+    @media (max-width: 820px) { /* התאמה למסכים צרים מתחת ל-820 פיקסלים */
+      .cars-grid { /* בוחר את הגריד במסך צר */
+        grid-template-columns: 1fr; /* הופך לעמודה אחת כדי שהכרטיסים יישארו גדולים וקריאים */
+      } /* סוגר שינוי עמודות במסך צר */
+    } /* סוגר בלוק @media */
+
+    .car-card { /* כרטיס בודד עבור רכב שנכנס לחניון */
+      background-color: var(--surface-2); /* רקע פחם כהה לכרטיס */
+      border: 1px solid var(--border); /* מסגרת עדינה לכרטיס */
+      border-radius: 16px; /* פינות מעוגלות */
+      padding: 16px; /* ריווח פנימי בכרטיס */
+      box-shadow: var(--shadow); /* צל רך לכרטיס */
+      display: flex; /* מסדר את תוכן הכרטיס בעמודה אנכית */
+      flex-direction: column; /* קובע סידור מלמעלה למטה בתוך הכרטיס */
+      gap: 14px; /* רווח בין התמונה, הפרטים וכפתור המחסום */
+      transition: transform 0.2s ease, border-color 0.2s ease; /* מעבר חלק בעת ריחוף */
+    } /* סוגר עיצוב .car-card */
+
+    .car-card:hover { /* מצב ריחוף עכבר מעל כרטיס רכב */
+      transform: translateY(-3px); /* מרים מעט את הכרטיס כלפי מעלה */
+      border-color: var(--accent); /* מדגיש את מסגרת הכרטיס בכחול */
+    } /* סוגר עיצוב .car-card:hover */
+
+    .img-box { /* מסגרת עוטפת לתמונת הרכב ולכפתור ההגדלה */
+      position: relative; /* מאפשר מיקום אבסולוטי של אייקון הזכוכית המגדלת בפינה */
+      height: 195px; /* גובה קבוע ואחיד לתמונות הרכבים */
+      border-radius: 12px; /* פינות מעוגלות למסגרת התמונה */
+      overflow: hidden; /* חותך חלקים חורגים לשמירה על פינות מעוגלות */
+      background-color: #151b22; /* רקע כהה זמני בזמן טעינת תמונה */
+      cursor: zoom-in; /* מציג סמן זכוכית מגדלת (+) בעת מעבר על התמונה */
+    } /* סוגר עיצוב .img-box */
+
+    .img-box img { /* תמונת הרכב/לוחית הרישוי עצמה */
+      width: 100%; /* רוחב מלא של המסגרת */
+      height: 100%; /* גובה מלא של המסגרת */
+      object-fit: cover; /* ממלא את המסגרת יפה ושומר על פרופורציות התמונה */
+      display: block; /* מונע רווח מיותר מתחת לתמונה */
+    } /* סוגר עיצוב .img-box img */
+
+    .zoom-badge { /* אייקון זכוכית מגדלת קטן בפינת התמונה */
+      position: absolute; /* ממקם את האייקון בפינה בתוך .img-box */
+      bottom: 10px; /* מרחק של 10 פיקסלים מהתחתית */
+      left: 10px; /* מרחק של 10 פיקסלים מצד שמאל */
+      background-color: rgba(15, 23, 42, 0.8); /* רקע כהה חצי שקוף לקריאות על כל תמונה */
+      color: #ffffff; /* צבע לבן לאייקון */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* מסגרת דקה ושקופה למחצה */
+      border-radius: 8px; /* פינות מעוגלות לאייקון */
+      padding: 5px 9px; /* ריווח פנימי */
+      font-size: 12px; /* גודל כתב קטן */
+      font-weight: 600; /* כתב חצי מודגש */
+    } /* סוגר עיצוב .zoom-badge */
+
+    .car-details { /* אזור הפרטים המלאים של הרכב בכרטיס */
+      display: flex; /* מסדר את שורות הפרטים בעמודה */
+      flex-direction: column; /* מציב כל פרט בשורה מסודרת */
+      gap: 6px; /* רווח קטן בין שורות הפרטים */
+    } /* סוגר עיצוב .car-details */
+
+    .entry-title { /* כותרת מספר הכניסה בכרטיס */
+      margin: 0; /* מאפס שוליים */
+      font-size: 18px; /* גודל כתב כותרת הכרטיס */
+      font-weight: 700; /* טקסט מודגש */
+    } /* סוגר עיצוב .entry-title */
+
+    .detail-line { /* שורת פרט בודד (שעת כניסה / לוחית רישוי) */
+      margin: 0; /* מאפס שוליים */
+      font-size: 14px; /* גודל כתב קריא */
+      color: var(--text-secondary); /* צבע אפור בהיר */
+    } /* סוגר עיצוב .detail-line */
+
+    .detail-line strong { /* ערך הפרט המודגש בתוך שורת הפרט */
+      color: var(--text-primary); /* צבע בהיר וברור לערך הלוחית או השעה */
+    } /* סוגר עיצוב .detail-line strong */
+
+    .status-row { /* שורת הסטטוס של הרכב בכרטיס */
+      margin-top: 4px; /* רווח קטן מעל תגית הסטטוס */
+    } /* סוגר עיצוב .status-row */
+
+    .badge { /* תגית סטטוס ("אושר" / "ממתין") */
+      display: inline-block; /* מאפשר ריווח ופינות מעוגלות בתוך השורה */
+      padding: 5px 12px; /* ריווח פנימי בתגית */
+      border-radius: 999px; /* צורת גלולה מעוגלת */
+      font-size: 13px; /* גודל כתב */
+      font-weight: 700; /* כתב מודגש */
+    } /* סוגר עיצוב .badge */
+
+    .badge-approved { /* עיצוב תגית סטטוס "אושר" בירוק */
+      background-color: var(--success-bg); /* רקע ירוק שקוף */
+      color: var(--success); /* טקסט ירוק ברור */
+      border: 1px solid rgba(34, 197, 94, 0.35); /* מסגרת ירוקה עדינה */
+    } /* סוגר עיצוב .badge-approved */
+
+    .badge-pending { /* עיצוב תגית סטטוס "ממתין" בכתום */
+      background-color: var(--warning-bg); /* רקע כתום שקוף */
+      color: var(--warning); /* טקסט כתום ברור */
+      border: 1px solid rgba(245, 158, 11, 0.35); /* מסגרת כתומה עדינה */
+    } /* סוגר עיצוב .badge-pending */
+
+    .barrier-btn { /* כפתור פתיחת מחסום בתחתית כל כרטיס */
+      width: 100%; /* ממלא את כל רוחב הכרטיס */
+      background-color: var(--surface-1); /* רקע כהה לכפתור */
+      color: var(--text-primary); /* צבע טקסט בהיר */
+      border: 1px solid var(--border); /* מסגרת דקה */
+      border-radius: 10px; /* פינות מעוגלות */
+      padding: 11px 14px; /* ריווח פנימי נוח ללחיצה */
+      font-size: 14px; /* גודל כתב */
+      font-weight: 600; /* טקסט חצי מודגש */
+      cursor: pointer; /* סמן יד בעת מעבר עכבר */
+      transition: background-color 0.2s ease, border-color 0.2s ease; /* מעבר צבע חלק */
+    } /* סוגר עיצוב .barrier-btn */
+
+    .barrier-btn:hover { /* מצב ריחוף עכבר מעל כפתור פתיחת מחסום */
+      background-color: var(--surface-hover); /* משנה לצבע ריחוף מעט בהיר יותר */
+      border-color: var(--accent); /* מדגיש את המסגרת בכחול */
+    } /* סוגר עיצוב .barrier-btn:hover */
+
+    .lightbox { /* חלון תצוגה מוגדלת לתמונה בעת לחיצה עליה */
+      position: fixed; /* מקבע את החלון מעל כל הדף */
+      inset: 0; /* פורס את הרקע הכהה על כל המסך (top/right/bottom/left: 0) */
+      background-color: rgba(10, 14, 20, 0.86); /* רקע כהה שקוף למחצה */
+      display: none; /* מוסתר כברירת מחדל עד שלוחצים על תמונה */
+      align-items: center; /* ממרכז אנכית את התמונה המוגדלת */
+      justify-content: center; /* ממרכז אופקית את התמונה המוגדלת */
+      padding: 24px; /* ריווח פנימי מהקצוות */
+      z-index: 999; /* מבטיח שהחלון המוגדל יופיע מעל כל רכיב אחר */
+    } /* סוגר עיצוב .lightbox */
+
+    .lightbox.open { /* מצב פעיל של חלון התמונה המוגדלת */
+      display: flex; /* מציג את חלון ההגדלה במרכז המסך */
+    } /* סוגר עיצוב .lightbox.open */
+
+    .lightbox-content { /* קופסת התוכן בתוך חלון ההגדלה */
+      max-width: 780px; /* רוחב מקסימלי לתמונה המוגדלת */
+      width: 100%; /* רוחב מלא עד למגבלה */
+      background-color: var(--surface-1); /* רקע כהה לקופסה */
+      border: 1px solid var(--border); /* מסגרת דקה */
+      border-radius: 16px; /* פינות מעוגלות */
+      padding: 16px; /* ריווח פנימי */
+      box-shadow: var(--shadow); /* צל עמוק */
+      text-align: center; /* ממרכז את התמונה והכיתוב */
+    } /* סוגר עיצוב .lightbox-content */
+
+    .lightbox-content img { /* התמונה המוגדלת בתוך חלון ההגדלה */
+      width: 100%; /* רוחב מלא בתוך הקופסה */
+      max-height: 70vh; /* מגביל גובה ל-70% מגובה המסך כדי שלא יגלוש */
+      object-fit: contain; /* מציג את כל התמונה בשלמותה ללא חיתוך */
+      border-radius: 12px; /* פינות מעוגלות לתמונה המוגדלת */
+    } /* סוגר עיצוב .lightbox-content img */
+
+    .lightbox-footer { /* שורת כיתוב וכפתור סגירה מתחת לתמונה המוגדלת */
+      margin-top: 12px; /* רווח מעל שורת הכיתוב */
+      display: flex; /* מסדר כיתוב וכפתור סגירה בשורה */
+      justify-content: space-between; /* מפריד בין הכיתוב לכפתור הסגירה */
+      align-items: center; /* מיישר אנכית למרכז */
+      gap: 12px; /* רווח בין הכיתוב לכפתור */
+    } /* סוגר עיצוב .lightbox-footer */
+  </style> <!-- סוגר בלוק ה-CSS -->
+</head> <!-- סוגר את אזור ה-head -->
+<body> <!-- פותח את גוף העמוד -->
+  <div class="app"> <!-- פותח את המיכל הראשי של האפליקציה -->
+    <header class="topbar"> <!-- פותח את הסרגל העליון -->
+      <div class="brand"> <!-- פותח אזור הלוגו ופרטי השומר -->
+        <div class="logo">P</div> <!-- מציג את סמל הלוגו של החניה -->
+        <div> <!-- עוטף את שם השומר והתיאור המשני -->
+          <p class="guard-name">שם השומר: מושיק עפיה</p> <!-- מציג את שם השומר המבוקש -->
+          <p class="system-sub">מערכת ניהול חניון חכם • לוח בקרה לשומר</p> <!-- מציג תיאור קצר של המערכת -->
+        </div> <!-- סוגר עטיפת שם השומר והתיאור -->
+      </div> <!-- סוגר אזור הלוגו ופרטי השומר -->
+
+      <div class="topbar-left"> <!-- פותח אזור השעון וכפתור הדמיית רכב חדש -->
+        <div class="clock-box" id="clockBox">--:--:--</div> <!-- מציג את השעון החי שמתעדכן באמצעות JavaScript -->
+        <button class="btn btn-primary" id="simulateCarBtn" type="button">+ הדמיית רכב חדש</button> <!-- כפתור להוספת רכב חדש למסך בלייב -->
+      </div> <!-- סוגר אזור השעון וכפתור ההדמיה -->
+    </header> <!-- סוגר את הסרגל העליון -->
+
+    <section class="stats-row" aria-label="סיכום נתוני חניון"> <!-- פותח את שורת שלוש קוביות הסטטיסטיקה -->
+      <div class="stat-card"> <!-- קובייה 1: סה"כ רכבים בחניון -->
+        <span class="stat-label">סה"כ רכבים בחניון:</span> <!-- תווית הנתון -->
+        <span class="stat-value" id="totalCarsCount">2</span> <!-- ערך דינמי של כמות הרכבים שמתעדכן אוטומטית -->
+      </div> <!-- סוגר קובייה 1 -->
+
+      <div class="stat-card"> <!-- קובייה 2: מקומות פנויים -->
+        <span class="stat-label">מקומות פנויים:</span> <!-- תווית הנתון -->
+        <span class="stat-value" id="freeSpotsCount">48</span> <!-- ערך דינמי של מקומות פנויים שמתעדכן אוטומטית -->
+      </div> <!-- סוגר קובייה 2 -->
+
+      <div class="stat-card"> <!-- קובייה 3: סטטוס שרת אחסון -->
+        <span class="stat-label">סטטוס שרת אחסון:</span> <!-- תווית הנתון -->
+        <span class="status-dot-wrap"><span class="dot"></span>מחובר</span> <!-- חיווי ירוק שמציין שהשרת מחובר -->
+      </div> <!-- סוגר קובייה 3 -->
+    </section> <!-- סוגר שורת קוביות הסטטיסטיקה -->
+
+    <section class="controls-bar" aria-label="חיפוש וסינון רכבים"> <!-- פותח את סרגל החיפוש והסינון -->
+      <input class="search-input" id="searchInput" type="search" placeholder="חיפוש לפי לוחית רישוי..."> <!-- תיבת חיפוש לסינון רכבים לפי מספר לוחית -->
+      <div class="filter-group"> <!-- פותח קבוצת כפתורי הסינון -->
+        <button class="filter-btn active" id="filterAllBtn" type="button">הכל</button> <!-- כפתור להצגת כל הרכבים -->
+        <button class="filter-btn" id="filterApprovedBtn" type="button">אושר</button> <!-- כפתור להצגת רכבים בסטטוס אושר בלבד -->
+      </div> <!-- סוגר קבוצת כפתורי הסינון -->
+    </section> <!-- סוגר סרגל החיפוש והסינון -->
+
+    <main class="cars-grid" id="carsGrid"> <!-- פותח את הגריד הדו-טורי של כרטיסי הרכבים -->
+      <article class="car-card" data-plate="21-175-61" data-status="approved"> <!-- פותח כרטיס עבור רכב 1 עם נתוני סינון וחיפוש -->
+        <div class="img-box" onclick="openLightbox('images/car1.jpg', 'כניסה מס׳ 1 • לוחית רישוי: 21-175-61')"> <!-- עוטף תמונה 1 ומאפשר הגדלה בלחיצה -->
+          <img src="images/car1.jpg" alt="תמונת רכב כניסה 1"> <!-- טוען את תמונת car1.jpg מתיקיית images -->
+          <span class="zoom-badge">🔍 הגדל</span> <!-- תגית זכוכית מגדלת בפינת התמונה -->
+        </div> <!-- סוגר עטיפת תמונה 1 -->
+        <div class="car-details"> <!-- פותח פרטי רכב 1 -->
+          <h2 class="entry-title">כניסה מס' 1</h2> <!-- מספר כניסה של הרכב -->
+          <p class="detail-line">שעת כניסה: <strong>17:03</strong></p> <!-- שעת הכניסה של הרכב -->
+          <p class="detail-line">לוחית רישוי: <strong>21-175-61</strong></p> <!-- מספר לוחית הרישוי של הרכב -->
+          <div class="status-row"> <!-- שורת תגית הסטטוס -->
+            <span class="badge badge-approved" data-status-badge>אושר</span> <!-- תגית סטטוס ירוקה של הרכב -->
+          </div> <!-- סוגר שורת תגית הסטטוס -->
+        </div> <!-- סוגר פרטי רכב 1 -->
+        <button class="barrier-btn" type="button" onclick="toggleBarrier(this)">פתח מחסום</button> <!-- כפתור פתיחת מחסום שמעדכן סטטוס בלחיצה -->
+      </article> <!-- סוגר כרטיס רכב 1 -->
+
+      <article class="car-card" data-plate="493-47-601" data-status="approved"> <!-- פותח כרטיס עבור רכב 2 עם נתוני סינון וחיפוש -->
+        <div class="img-box" onclick="openLightbox('images/car2.jpg', 'כניסה מס׳ 2 • לוחית רישוי: 493-47-601')"> <!-- עוטף תמונה 2 ומאפשר הגדלה בלחיצה -->
+          <img src="images/car2.jpg" alt="תמונת רכב כניסה 2"> <!-- טוען את תמונת car2.jpg מתיקיית images -->
+          <span class="zoom-badge">🔍 הגדל</span> <!-- תגית זכוכית מגדלת בפינת התמונה -->
+        </div> <!-- סוגר עטיפת תמונה 2 -->
+        <div class="car-details"> <!-- פותח פרטי רכב 2 -->
+          <h2 class="entry-title">כניסה מס' 2</h2> <!-- מספר כניסה של הרכב -->
+          <p class="detail-line">שעת כניסה: <strong>17:15</strong></p> <!-- שעת הכניסה של הרכב -->
+          <p class="detail-line">לוחית רישוי: <strong>493-47-601</strong></p> <!-- מספר לוחית הרישוי של הרכב -->
+          <div class="status-row"> <!-- שורת תגית הסטטוס -->
+            <span class="badge badge-approved" data-status-badge>אושר</span> <!-- תגית סטטוס ירוקה של הרכב -->
+          </div> <!-- סוגר שורת תגית הסטטוס -->
+        </div> <!-- סוגר פרטי רכב 2 -->
+        <button class="barrier-btn" type="button" onclick="toggleBarrier(this)">פתח מחסום</button> <!-- כפתור פתיחת מחסום שמעדכן סטטוס בלחיצה -->
+      </article> <!-- סוגר כרטיס רכב 2 -->
+    </main> <!-- סוגר את הגריד הדו-טורי -->
+  </div> <!-- סוגר את המיכל הראשי -->
+
+  <div class="lightbox" id="lightboxModal" onclick="closeLightboxOnBackdrop(event)"> <!-- פותח חלון הגדלת תמונה בלחיצה -->
+    <div class="lightbox-content"> <!-- פותח קופסת התוכן של התמונה המוגדלת -->
+      <img id="lightboxImg" src="" alt="תצוגה מוגדלת"> <!-- מציג את התמונה שנבחרה להגדלה -->
+      <div class="lightbox-footer"> <!-- פותח שורת הכיתוב וכפתור הסגירה -->
+        <span id="lightboxCaption" class="detail-line"></span> <!-- מציג את פרטי הכניסה והלוחית של התמונה המוגדלת -->
+        <button class="btn btn-primary" type="button" onclick="closeLightbox()">סגור</button> <!-- כפתור לסגירת חלון ההגדלה -->
+      </div> <!-- סוגר שורת הכיתוב וכפתור הסגירה -->
+    </div> <!-- סוגר קופסת התוכן -->
+  </div> <!-- סוגר חלון הגדלת התמונה -->
+
+  <script> // פותח סקריפט JavaScript שבו כל שורה מוסברת בהערה
+    const TOTAL_PARKING_SPOTS = 50; // מגדיר קיבולת כוללת של 50 מקומות חניה לחישוב מקומות פנויים
+    let currentFilter = 'all'; // שומר את מצב הסינון הנוכחי ('all' לכל הרכבים או 'approved' למאושרים בלבד)
+    let entryCounter = 2; // שומר מונה כניסות שמתחיל מ-2 עבור שני הרכבים הקיימים
+
+    function updateClock() { // פונקציה שמעדכנת את השעה והתאריך בסרגל העליון
+      const now = new Date(); // יוצר אובייקט זמן עדכני מהמחשב
+      const timeStr = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); // מפרמט את השעה העברית (שעות, דקות ושניות)
+      const dateStr = now.toLocaleDateString('he-IL'); // מפרמט את התאריך העברי של היום
+      document.getElementById('clockBox').textContent = `${timeStr} | ${dateStr}`; // מציב את השעה והתאריך בתוך תיבת השעון
+    } // סוגר פונקציית updateClock
+
+    function updateStats() { // פונקציה שמחשבת ומעדכנת את סך הרכבים והמקומות הפנויים
+      const cardsCount = document.querySelectorAll('#carsGrid .car-card').length; // סופר כמה כרטיסי רכבים קיימים כרגע בדף
+      const freeSpots = Math.max(TOTAL_PARKING_SPOTS - cardsCount, 0); // מחשב כמה מקומות פנויים נותרו בלי לרדת מתחת ל-0
+      document.getElementById('totalCarsCount').textContent = String(cardsCount); // מעדכן את קובץ "סה"כ רכבים בחניון"
+      document.getElementById('freeSpotsCount').textContent = String(freeSpots); // מעדכן את קוביית "מקומות פנויים"
+    } // סוגר פונקציית updateStats
+
+    function applyFilters() { // פונקציה שמסננת כרטיסים לפי טקסט החיפוש ולפי כפתור הסינון
+      const query = document.getElementById('searchInput').value.trim().toLowerCase(); // קורא את טקסט החיפוש ומנקה רווחים מיותרים
+      const cards = document.querySelectorAll('#carsGrid .car-card'); // בוחר את כל כרטיסי הרכבים בגריד
+      cards.forEach((card) => { // עובר על כל כרטיס בנפרד
+        const plate = (card.dataset.plate || '').toLowerCase(); // קורא את מספר הלוחית השמור בכרטיס
+        const status = card.dataset.status || 'approved'; // קורא את סטטוס הרכב השמור בכרטיס
+        const matchesSearch = !query || plate.includes(query); // בודק אם מספר הלוחית תואם לחיפוש (או שאין חיפוש)
+        const matchesFilter = currentFilter === 'all' || status === currentFilter; // בודק אם הכרטיס מתאים לבחירת הסינון הנוכחית
+        card.style.display = matchesSearch && matchesFilter ? 'flex' : 'none'; // מציג את הכרטיס אם עמד בשני התנאים או מסתיר אותו
+      }); // סוגר לולאת הסינון
+    } // סוגר פונקציית applyFilters
+
+    function toggleBarrier(buttonEl) { // פונקציה שמופעלת בלחיצה על כפתור "פתח מחסום"
+      const card = buttonEl.closest('.car-card'); // מאתר את כרטיס הרכב שאליו שייך הכפתור שנלחץ
+      const badge = card.querySelector('[data-status-badge]'); // מאתר את תגית הסטטוס בתוך הכרטיס
+      card.dataset.status = 'approved'; // מעדכן את נתון הסטטוס של הכרטיס ל-"approved"
+      badge.textContent = 'אושר'; // מעדכן את טקסט התגית ל-"אושר"
+      badge.classList.remove('badge-pending'); // מסיר עיצוב של ממתין אם היה קיים
+      badge.classList.add('badge-approved'); // מחיל עיצוב סטטוס ירוק ("אושר")
+      buttonEl.textContent = 'המחסום נפתח ✓'; // מעדכן את טקסט הכפתור לחיווי שהמחסום נפתח
+    } // סוגר פונקציית toggleBarrier
+
+    function openLightbox(imgSrc, captionText) { // פונקציה שפותחת את התמונה המוגדלת בלחיצה
+      document.getElementById('lightboxImg').src = imgSrc; // מציב את כתובת התמונה המוגדלת
+      document.getElementById('lightboxCaption').textContent = captionText; // מציב את הכיתוב המלווה לתמונה המוגדלת
+      document.getElementById('lightboxModal').classList.add('open'); // מציג את חלון ההגדלה על המסך
+    } // סוגר פונקציית openLightbox
+
+    function closeLightbox() { // פונקציה שסוגרת את חלון התמונה המוגדלת
+      document.getElementById('lightboxModal').classList.remove('open'); // מסתיר את חלון ההגדלה
+    } // סוגר פונקציית closeLightbox
+
+    function closeLightboxOnBackdrop(event) { // פונקציה שסוגרת את ההגדלה אם לוחצים על הרקע הכהה מחוץ לתמונה
+      if (event.target.id === 'lightboxModal') { // בודק שהלחיצה הייתה על הרקע הכהה ולא על התמונה עצמה
+        closeLightbox(); // סוגר את חלון ההגדלה
+      } // סוגר בדיקת רקע
+    } // סוגר פונקציית closeLightboxOnBackdrop
+
+    document.getElementById('simulateCarBtn').addEventListener('click', () => { // מאזין ללחיצה על "+ הדמיית רכב חדש"
+      entryCounter += 1; // מקדם את מספר הכניסה הבא ב-1
+      const now = new Date(); // לוקח את השעה הנוכחית של הכניסה החדשה
+      const hhmm = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); // מפרמט את השעה לפורמט שעות:דקות
+      const samplePlates = ['78-412-34', '90-221-55', '14-889-62', '63-504-19']; // רשימת לוחיות רישוי לדוגמה להדמיה
+      const sampleImgs = ['images/car1.jpg', 'images/car2.jpg']; // רשימת התמונות הקיימות בשרת האחסון
+      const plate = samplePlates[(entryCounter - 1) % samplePlates.length]; // בוחר לוחית רישוי מתוך הרשימה
+      const imgPath = sampleImgs[(entryCounter - 1) % sampleImgs.length]; // בוחר תמונה מתוך תמונות הרכבים הקיימות
+      const article = document.createElement('article'); // יוצר אלמנט כרטיס חדש עבור הרכב החדש
+      article.className = 'car-card'; // מחיל עליו את מחלקת העיצוב של כרטיס רכב
+      article.dataset.plate = plate; // שומר את מספר הלוחית לשימוש בחיפוש
+      article.dataset.status = 'pending'; // מגדיר את הרכב החדש כ-"ממתין" עד לאישור פתיחת מחסום
+      article.innerHTML = `
+        <div class="img-box" onclick="openLightbox('${imgPath}', 'כניסה מס׳ ${entryCounter} • לוחית רישוי: ${plate}')">
+          <img src="${imgPath}" alt="תמונת רכב כניסה ${entryCounter}">
+          <span class="zoom-badge">🔍 הגדל</span>
+        </div>
+        <div class="car-details">
+          <h2 class="entry-title">כניסה מס' ${entryCounter}</h2>
+          <p class="detail-line">שעת כניסה: <strong>${hhmm}</strong></p>
+          <p class="detail-line">לוחית רישוי: <strong>${plate}</strong></p>
+          <div class="status-row">
+            <span class="badge badge-pending" data-status-badge>ממתין</span>
+          </div>
+        </div>
+        <button class="barrier-btn" type="button" onclick="toggleBarrier(this)">פתח מחסום</button>
+      `; // מכניס את מבנה הכרטיס המלא עם כל הפרטים וכפתור פתיחת המחסום
+      document.getElementById('carsGrid').prepend(article); // מוסיף את הכרטיס החדש בראש הגריד כך שיראו אותו מיד
+      updateStats(); // מעדכן את קוביות הסטטיסטיקה ("סה"כ רכבים בחניון" ו-"מקומות פנויים")
+      applyFilters(); // מפעיל מחדש את הסינון/חיפוש כדי שהכרטיס החדש יכבד את הבחירה הנוכחית
+    }); // סוגר מאזין ללחיצה על הדמיית רכב חדש
+
+    document.getElementById('searchInput').addEventListener('input', applyFilters); // מפעיל סינון מיידי בכל הקלדה בתיבת החיפוש
+
+    document.getElementById('filterAllBtn').addEventListener('click', () => { // מאזין ללחיצה על כפתור הסינון "הכל"
+      currentFilter = 'all'; // מעדכן את מצב הסינון ל-"הכל"
+      document.getElementById('filterAllBtn').classList.add('active'); // מסמן את כפתור "הכל" כפעיל
+      document.getElementById('filterApprovedBtn').classList.remove('active'); // מסיר סימון פעיל מכפתור "אושר"
+      applyFilters(); // מעדכן את תצוגת הכרטיסים בהתאם לבחירה
+    }); // סוגר מאזין לכפתור "הכל"
+
+    document.getElementById('filterApprovedBtn').addEventListener('click', () => { // מאזין ללחיצה על כפתור הסינון "אושר"
+      currentFilter = 'approved'; // מעדכן את מצב הסינון ל-"אושר"
+      document.getElementById('filterApprovedBtn').classList.add('active'); // מסמן את כפתור "אושר" כפעיל
+      document.getElementById('filterAllBtn').classList.remove('active'); // מסיר סימון פעיל מכפתור "הכל"
+      applyFilters(); // מעדכן את תצוגת הכרטיסים בהתאם לבחירה
+    }); // סוגר מאזין לכפתור "אושר"
+
+    updateClock(); // מפעיל עדכון ראשוני של השעון מיד עם טעינת העמוד
+    setInterval(updateClock, 1000); // מפעיל עדכון אוטומטי של השעון כל שנייה (1000 מילי-שניות)
+    updateStats(); // מחשב ומציג את הנתונים הסטטיסטיים הראשוניים בעת טעינת העמוד
+  </script> <!-- סוגר בלוק ה-JavaScript -->
+</body> <!-- סוגר את גוף העמוד -->
+</html> <!-- סוגר את מסמך ה-HTML -->
